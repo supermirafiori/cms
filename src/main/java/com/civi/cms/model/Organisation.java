@@ -6,4 +6,5 @@ public class Organisation
     private String organisationName;
     private String location;
     private String officeAddress;
+
 }

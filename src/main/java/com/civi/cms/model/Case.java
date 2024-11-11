@@ -1,34 +1,37 @@
 package com.civi.cms.model;
 
-import java.time.LocalDateTime;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Entity
 public class Case
 {
-    private Long caseId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long casecaseIdId;
     private String caseTitle;
     private String caseDescription;
-    private String caseType;
     private long clientId;
     private String assignedCaseWorker;
     private String caseStatus;
     private String priorityLevel;
     private LocalDateTime dateOpened;   //need to check
     private LocalDateTime dateClosed;   //need to check
-    private LocalDateTime initialAssessmentDate;  //need to check
     private LocalDateTime nextReviewDate;    //need to check
     private String riskLevel;
-    private String caseNotes;
     private String attachement;
     // need to check with Dibya,because there needs to be a container here
     private String caseCategory;
     private String legalInvolvement;
-    private String lastUpdated;
     private String referralSource;
-    private String familyMembersInvolved;
-    private String interventionPlan;
+    private List<String> familyMembersInvolved;
     private String serviceProvider;
-    private String collaborators;
-    private String confidentialityAlert;
+
 
 
 }

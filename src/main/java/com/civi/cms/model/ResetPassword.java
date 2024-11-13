@@ -1,7 +1,11 @@
 package com.civi.cms.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+@Entity
 public class ResetPassword
 {
+    @Id
     private String emailAddress;
     private int otp;
 

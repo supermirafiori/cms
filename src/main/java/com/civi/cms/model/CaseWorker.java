@@ -1,9 +1,9 @@
 package com.civi.cms.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.util.List;
+
 @Entity
 public class CaseWorker {
     private String firstName;
@@ -20,6 +20,17 @@ public class CaseWorker {
     private String location;
     private String officeAddress;
     private String qualification;
+
+    @OneToMany(mappedBy = "assignedCaseWorker", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Case> cases;
+
+    public List<Case> getCases() {
+        return cases;
+    }
+
+    public void setCases(List<Case> cases) {
+        this.cases = cases;
+    }
 
     public String getQualification() {
         return qualification;

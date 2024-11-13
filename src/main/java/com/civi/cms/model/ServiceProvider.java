@@ -1,9 +1,8 @@
 package com.civi.cms.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 public class ServiceProvider
@@ -15,6 +14,8 @@ public class ServiceProvider
     private String phoneNumber;
     private String emailAddress;
 
+    @ManyToMany(mappedBy = "serviceProviders")
+    private List<Case> cases;
 
     public String getProviderId() {
         return providerId;

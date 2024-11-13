@@ -1,9 +1,6 @@
 package com.civi.cms.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 @Entity
@@ -14,6 +11,11 @@ public class CaseHistory
     private long progressId;
     private long caseId;
     private String progressReport;
+
+    @ManyToOne
+    @JoinColumn(name = "case_id", nullable = false)
+    private Case c;
+
     private LocalDateTime reportDate;
 
     public long getProgressId() {

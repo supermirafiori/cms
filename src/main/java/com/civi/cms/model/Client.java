@@ -1,5 +1,7 @@
 package com.civi.cms.model;
 
+import java.time.LocalDate;
+
 public class Client
 {
     private Long clientId;            // Primary Key

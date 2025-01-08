@@ -1,5 +1,7 @@
 package com.civi.cms.model;
 
+import java.time.LocalDateTime;
+
 public class Login
 {
     private Long userId;               // Primary Key

@@ -9,19 +9,26 @@ public class ServiceProvider
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String providerId;
+    @Column(name = "provider_id")
+    private int providerId;
+
+    @Column(name = "provider_name")
     private String providerName;
+
+    @Column(name = "phone_number")
+
     private String phoneNumber;
+    @Column(name = "email_address")
     private String emailAddress;
 
     @ManyToMany(mappedBy = "serviceProviders")
-    private List<Case> cases;
+    private List<CaseDetails> caseDetails;
 
-    public String getProviderId() {
+    public int getProviderId() {
         return providerId;
     }
 
-    public void setProviderId(String providerId) {
+    public void setProviderId(int providerId) {
         this.providerId = providerId;
     }
 

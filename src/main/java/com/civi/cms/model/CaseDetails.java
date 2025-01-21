@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-public class Case
+public class CaseDetails
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,22 +26,22 @@ public class Case
     private LocalDateTime dateClosed;
     private LocalDateTime nextReviewDate;
 
-    @OneToMany(mappedBy = "case", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "c", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<FollowUp> followUps;
 
     @ElementCollection
     private List<String> familyMembersInvolved;
 
     // Relationships
-    @OneToMany(mappedBy = "case", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "caseDetails1", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CaseAttachment> attachments;
 
-    @OneToMany(mappedBy = "case", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "c", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CaseHistory> caseHistories;
 
     @ManyToMany
     @JoinTable(
-            name = "case_service_provider",
+            name = "serviceProvider",
             joinColumns = @JoinColumn(name = "case_id"),
             inverseJoinColumns = @JoinColumn(name = "provider_id")
     )

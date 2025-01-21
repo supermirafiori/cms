@@ -14,6 +14,6 @@ public class CaseAttachment {
     private byte[] fileData;
 
     @ManyToOne
-    @JoinColumn(name = "case_id", nullable = false)
-    private Case c1;
+    @JoinColumn(name = "caseId", nullable = false)
+    private CaseDetails caseDetails1;
 }

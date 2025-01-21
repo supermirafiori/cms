@@ -6,8 +6,8 @@ import jakarta.persistence.*;
 public class Client
 {
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long clientId;            // Primary Key
+   // @GeneratedValue(strategy = GenerationType.IDENTITY)
+   // private Long clientId;            // Primary Key
     private String firstName;
     private String lastName;
     private String gender;
@@ -15,13 +15,13 @@ public class Client
     private String clientEmail;
     private String clientPhoneNumber;
 
-    public Long getClientId() {
-        return clientId;
-    }
+   // public Long getClientId() {
+    //    return clientId;
+    //}
 
-    public void setClientId(Long clientId) {
-        this.clientId = clientId;
-    }
+    //public void setClientId(Long clientId) {
+       // this.clientId = clientId;
+   // }
 
     public String getFirstName() {
         return firstName;

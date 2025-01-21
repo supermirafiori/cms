@@ -10,7 +10,10 @@ public class CaseWorker {
     private String lastName;
     @Id
     private String email;
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(nullable = false, unique = true)
+   // @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "case_worker_id_seq")
+    @SequenceGenerator(name = "auto_increment_seq", sequenceName = "auto_increment_seq", allocationSize = 1)
+
     private long caseWorkerId;  //similar to userId
     private String phoneNumber;
     private String jobTitle;
@@ -22,14 +25,14 @@ public class CaseWorker {
     private String qualification;
 
     @OneToMany(mappedBy = "assignedCaseWorker", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Case> cases;
+    private List<CaseDetails> caseDetails;
 
-    public List<Case> getCases() {
-        return cases;
+    public List<CaseDetails> getCases() {
+        return caseDetails;
     }
 
-    public void setCases(List<Case> cases) {
-        this.cases = cases;
+    public void setCases(List<CaseDetails> caseDetails) {
+        this.caseDetails = caseDetails;
     }
 
     public String getQualification() {

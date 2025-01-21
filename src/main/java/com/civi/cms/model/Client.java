@@ -3,6 +3,8 @@ package com.civi.cms.model;
 import jakarta.persistence.*;
 
 @Entity
+
+
 public class Client
 {
 

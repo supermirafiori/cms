@@ -45,9 +45,7 @@ public class CaseDetailController {
 
     //updated put - for updating cases
     @PutMapping("/update") //already tested in postman
-    public ResponseEntity<CaseDetails> updateCase(
-
-            @RequestBody CaseDetails caseDetailsObj)
+    public ResponseEntity<CaseDetails> updateCase(@RequestBody CaseDetails caseDetailsObj)
     {
 
         CaseDetails updatedCaseDetails = caseDetailService.updateCase(caseDetailsObj);

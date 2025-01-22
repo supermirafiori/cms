@@ -32,12 +32,14 @@ public class CaseDetailService
     }
 
     // Create a new case
-    public CaseDetails createCase(CaseDetails caseDetailsObj) {
+    public CaseDetails createCase(CaseDetails caseDetailsObj)
+    {
         return caseDetailRepository.save(caseDetailsObj);
     }
 
     // Update an existing case
-    public CaseDetails updateCase(Long id, CaseDetails caseDetailsObj) {
+    public CaseDetails updateCase(Long id, CaseDetails caseDetailsObj)
+    {
         if (caseDetailRepository.existsById(id)) {
             throw new RuntimeException("Case not found with ID: " + id);
         }

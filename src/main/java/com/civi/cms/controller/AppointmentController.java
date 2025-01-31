@@ -1,7 +1,7 @@
 package com.civi.cms.controller;
 
 import com.civi.cms.model.Appointment;
-import com.civi.cms.model.CaseDetails;
+
 import com.civi.cms.service.AppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +32,8 @@ public class AppointmentController {
     }
 
     @GetMapping("/get") //tested in postman
-    public ResponseEntity<List<Appointment>> getAllAppointment() {
+    public ResponseEntity<List<Appointment>> getAllAppointment()
+    {
         List<Appointment> appointment = appointmentService.getAllAppointments();
         return ResponseEntity.ok(appointment);
     }
@@ -41,11 +42,22 @@ public class AppointmentController {
     //to update appointments based on id
 
     @PutMapping("/update")
-    public ResponseEntity<Appointment> updateAppointment(@RequestBody Appointment appointmentObj) {
+    public ResponseEntity<Appointment> updateAppointment(@RequestBody Appointment appointmentObj)
+    {
         {
             Appointment updatedAppointmentDetails = appointmentService.updateAppointment(appointmentObj);
             //CaseDetails updatedCaseDetails = caseDetailService.updateCase(caseDetailsObj);
             return ResponseEntity.ok(updatedAppointmentDetails);
         }
     }
+
+    @DeleteMapping("/{id}") //tested in postman already, its working
+    public ResponseEntity<Boolean> deleteAppointment(@PathVariable Long id)
+    {
+
+        return ResponseEntity.ok(appointmentService.deleteAppointment(id));
+    }
+
+
+
 }

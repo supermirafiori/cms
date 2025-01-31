@@ -37,15 +37,7 @@ public class CaseDetailService
         return caseDetailRepository.save(caseDetailsObj);
     }
 
-    // Update an existing case
-    public CaseDetails updateCase(Long id, CaseDetails caseDetailsObj)
-    {
-        if (caseDetailRepository.existsById(id)) {
-            throw new RuntimeException("Case not found with ID: " + id);
-        }
-        caseDetailsObj.setCaseId(id);
-        return caseDetailRepository.save(caseDetailsObj);
-    }
+
 
     // Delete a case
     public boolean deleteCase(Long id)
@@ -59,7 +51,8 @@ public class CaseDetailService
     }
 
 
-    public CaseDetails updateCase(CaseDetails caseDetailsObj) {
+    public CaseDetails updateCase(CaseDetails caseDetailsObj)
+    {
         return
         caseDetailRepository.save(caseDetailsObj);
     }

@@ -17,7 +17,8 @@ public class CaseDetailController {
 
     // Get all cases
     @GetMapping
-    public ResponseEntity<List<CaseDetails>> getAllCases() {
+    public ResponseEntity<List<CaseDetails>> getAllCases()
+    {
         List<CaseDetails> caseDetails = caseDetailService.getAllCases();
         return ResponseEntity.ok(caseDetails);
     }
@@ -56,7 +57,8 @@ public class CaseDetailController {
 
     // Delete a case
     @DeleteMapping("/{id}") //tested in postman already, its working
-    public ResponseEntity<Boolean> deleteCase(@PathVariable Long id) {
+    public ResponseEntity<Boolean> deleteCase(@PathVariable Long id)
+    {
 
         return ResponseEntity.ok(caseDetailService.deleteCase(id));
     }

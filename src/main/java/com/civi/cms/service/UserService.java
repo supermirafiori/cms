@@ -3,6 +3,7 @@ package com.civi.cms.service;
 import com.civi.cms.model.UserLogin;
 import com.civi.cms.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,11 +25,15 @@ public class UserService
         this.passwordEncoder = new BCryptPasswordEncoder(); // Initialize password encoder
     }
 
-    public UserLogin save(UserLogin userlogin)
+    public ResponseEntity<?> save(UserLogin userlogin)
     {
+        Optional<UserLogin> userLoginOptional = userRepository.findById(userlogin.getEmail());
+        if(userLoginOptional.isPresent()){
+            return ResponseEntity.badRequest().body("User already exists.");
+        }
         userlogin.setPassword(passwordEncoder.encode(userlogin.getPassword()));
         userlogin.setLastLogin(LocalDateTime.now());
-        return userRepository.save(userlogin);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userRepository.save(userlogin));
     }
 
     public ResponseEntity<?> validateUsernameAndPassword(String username, String password) {

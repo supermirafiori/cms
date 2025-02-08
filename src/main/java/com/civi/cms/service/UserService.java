@@ -4,32 +4,41 @@ import com.civi.cms.model.UserLogin;
 import com.civi.cms.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
 public class UserService
 {
-    @Autowired
+
     UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    @Autowired
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = new BCryptPasswordEncoder(); // Initialize password encoder
+    }
 
     public UserLogin save(UserLogin userlogin)
     {
-
-
-        return userRepository.save(userlogin); //user repository was made static
-        //why was user repository made static
+        userlogin.setPassword(passwordEncoder.encode(userlogin.getPassword()));
+        userlogin.setLastLogin(LocalDateTime.now());
+        return userRepository.save(userlogin);
     }
 
-    public ResponseEntity<String> validateUsernameAndPassword(String username, String password) {
+    public ResponseEntity<?> validateUsernameAndPassword(String username, String password) {
         Optional<UserLogin> userOptional = userRepository.findById(username);
         if (userOptional.isEmpty()) {
             return ResponseEntity.badRequest().body("Invalid username. Please check and try again.");
         }
 
         UserLogin user = userOptional.get();
-        if (!user.getPassword().equals(password)) {
+        if (!passwordEncoder.matches(password, user.getPassword())) {
             return ResponseEntity.badRequest().body("Invalid password. Please check and try again.");
         }
         else{
@@ -40,7 +49,7 @@ public class UserService
 
         }
 
-        return ResponseEntity.ok("Login successful.");
+        return ResponseEntity.ok(user);
     }
 
 

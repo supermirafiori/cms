@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @RequestMapping("/users")
@@ -29,7 +30,7 @@ public class UserLoginController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> validateLogin(@RequestBody UserLogin loginRequest) {
+    public ResponseEntity<?> validateLogin(@RequestBody UserLogin loginRequest) {
         return userService.validateUsernameAndPassword(loginRequest.getEmail(), loginRequest.getPassword());
 
     }

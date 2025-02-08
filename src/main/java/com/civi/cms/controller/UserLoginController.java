@@ -19,8 +19,7 @@ public class UserLoginController {
     @PostMapping("/register")
     public ResponseEntity<?> createUserLogin(@RequestBody UserLogin userLogin) {
         try {
-            UserLogin createdUser = userService.save(userLogin);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
+            return userService.save(userLogin);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error creating user: " + e.getMessage());

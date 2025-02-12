@@ -1,11 +1,13 @@
 package com.civi.cms.controller;
 
 import com.civi.cms.model.CaseDetails;
+import com.civi.cms.model.CaseHistory;
 import com.civi.cms.service.CaseDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -33,6 +35,8 @@ public class CaseDetailController {
     // Create a new case
     @PostMapping("/create") //tested already in postman
     public ResponseEntity<CaseDetails> createCase(@RequestBody CaseDetails caseDetailsObj) {
+        caseDetailsObj.setDateOpened(LocalDateTime.now());
+        caseDetailsObj.setCaseStatus(CaseDetails.CaseStatus.OPEN);
         CaseDetails createdCaseDetails = caseDetailService.createCase(caseDetailsObj);
         return ResponseEntity.ok(createdCaseDetails);
     }
@@ -51,6 +55,13 @@ public class CaseDetailController {
 
         CaseDetails updatedCaseDetails = caseDetailService.updateCase(caseDetailsObj);
         return ResponseEntity.ok(updatedCaseDetails);
+    }
+
+    @PutMapping("/updatecasehistory/{caseid}") //already tested in postman
+    public ResponseEntity<?> updateCase(@PathVariable Long caseid,@RequestBody CaseHistory caseHistory)
+    {
+         return caseDetailService.updateCaseHistory(caseid,caseHistory);
+
     }
 
 

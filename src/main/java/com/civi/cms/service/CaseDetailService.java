@@ -1,8 +1,9 @@
 package com.civi.cms.service;
 import com.civi.cms.model.CaseDetails;
+import com.civi.cms.model.CaseHistory;
 import com.civi.cms.repository.CaseDetailRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -58,4 +59,16 @@ public class CaseDetailService
     }
 
 
+    public ResponseEntity<String> updateCaseHistory(Long CaseId, CaseHistory caseHistory) {
+        Optional<CaseDetails> caseOptional = caseDetailRepository.findById(CaseId);
+        if (caseOptional.isPresent()) {
+            CaseDetails details= caseOptional.get();
+            List<CaseHistory> histories=details.getCaseHistories();
+            histories.add(caseHistory);
+            caseDetailRepository.save(details);
+            return ResponseEntity.ok("updated successfully");
+        } else {
+            return ResponseEntity.badRequest().body("invalid caseid");
+        }
+    }
 }

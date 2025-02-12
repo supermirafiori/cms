@@ -1,5 +1,6 @@
 package com.civi.cms.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -9,12 +10,20 @@ public class CaseHistory
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long progressId;
-    //private long caseId;
     private String progressReport;
+
+    public CaseDetails getCaseDetails() {
+        return caseDetails;
+    }
+
+    public void setCaseDetails(CaseDetails caseDetails) {
+        this.caseDetails = caseDetails;
+    }
 
     @ManyToOne
     @JoinColumn(name = "case_id", nullable = false)
-    private CaseDetails c;
+    @JsonBackReference
+    private CaseDetails caseDetails;
 
     private LocalDateTime reportDate;
 

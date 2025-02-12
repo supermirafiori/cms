@@ -1,5 +1,6 @@
 package com.civi.cms.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -15,7 +16,7 @@ public class CaseDetails
     private String caseTitle;
     private String caseDescription;
     private long clientId;
-    private String caseStatus;
+    private CaseStatus caseStatus;
     private String priorityLevel;
     private String riskLevel;
     private String caseCategory;
@@ -30,13 +31,17 @@ public class CaseDetails
     private List<FollowUp> followUps;
 
     @ElementCollection
-    private List<String> familyMembersInvolved;
+    @OneToMany(mappedBy = "caseDetails", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<Member> membersInvolved;
 
     // Relationships
     @OneToMany(mappedBy = "caseDetails1", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+
     private List<CaseAttachment> attachments;
 
-    @OneToMany(mappedBy = "c", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "caseDetails", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<CaseHistory> caseHistories;
 
     @ManyToMany
@@ -100,11 +105,11 @@ public class CaseDetails
     }
 
 
-    public String getCaseStatus() {
+    public CaseStatus getCaseStatus() {
         return caseStatus;
     }
 
-    public void setCaseStatus(String caseStatus) {
+    public void setCaseStatus(CaseStatus caseStatus) {
         this.caseStatus = caseStatus;
     }
 
@@ -172,12 +177,12 @@ public class CaseDetails
         this.nextReviewDate = nextReviewDate;
     }
 
-    public List<String> getFamilyMembersInvolved() {
-        return familyMembersInvolved;
+    public List<Member> getMembersInvolved() {
+        return membersInvolved;
     }
 
-    public void setFamilyMembersInvolved(List<String> familyMembersInvolved) {
-        this.familyMembersInvolved = familyMembersInvolved;
+    public void setMembersInvolved(List<Member> membersInvolved) {
+        this.membersInvolved = membersInvolved;
     }
 
     public List<CaseAttachment> getAttachments() {
@@ -202,5 +207,12 @@ public class CaseDetails
 
     public void setServiceProviders(List<ServiceProvider> serviceProviders) {
         this.serviceProviders = serviceProviders;
+    }
+
+    public enum CaseStatus{
+        OPEN,
+        IN_PROGRESS,
+        HOLD,
+        CLOSED
     }
 }

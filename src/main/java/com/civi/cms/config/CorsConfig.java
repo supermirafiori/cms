@@ -23,7 +23,8 @@ public class CorsConfig {
                 List<String> origins = Arrays.asList(allowedOrigins.split(","));
 
                 registry.addMapping("/**")
-                        .allowedOrigins(origins.toArray(new String[0])) // Dynamic origins from properties
+                        .allowedOrigins("*")
+                        //.allowedOrigins(origins.toArray(new String[0])) // Dynamic origins from properties
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Allowed methods
                         .allowedHeaders("*") // Allow all headers
                         .allowCredentials(true); // Allow cookies

@@ -26,8 +26,8 @@ public class CorsConfig {
                         .allowedOrigins("*")
                         //.allowedOrigins(origins.toArray(new String[0])) // Dynamic origins from properties
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Allowed methods
-                        .allowedHeaders("*") // Allow all headers
-                        .allowCredentials(true); // Allow cookies
+                        .allowedHeaders("*"); // Allow all headers
+                        //.allowCredentials(true); // Allow cookies
             }
         };
     }

@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -41,12 +42,6 @@ public class CaseDetailController {
         return ResponseEntity.ok(createdCaseDetails);
     }
 
-    // Update an existing case
-    //@PutMapping("/{id}")
-   //public ResponseEntity<CaseDetails> updateCase(@PathVariable Long id, @RequestBody CaseDetails caseDetailsObj) {
-       // CaseDetails updatedCaseDetails = caseDetailService.updateCase(id, caseDetailsObj);
-        //return ResponseEntity.ok(updatedCaseDetails);
-    //}
 
     //updated put - for updating cases
     @PutMapping("/update") //already tested in postman
@@ -70,7 +65,6 @@ public class CaseDetailController {
     @DeleteMapping("/{id}") //tested in postman already, its working
     public ResponseEntity<Boolean> deleteCase(@PathVariable Long id)
     {
-
         return ResponseEntity.ok(caseDetailService.deleteCase(id));
     }
 

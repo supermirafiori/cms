@@ -1,6 +1,7 @@
 package com.civi.cms.service;
 import com.civi.cms.model.CaseDetails;
 import com.civi.cms.model.CaseHistory;
+import com.civi.cms.repository.CaseAttachmentRepository;
 import com.civi.cms.repository.CaseDetailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,9 @@ public class CaseDetailService
     @Autowired
     private CaseDetailRepository caseDetailRepository;
 
+    @Autowired
+    CaseAttachmentRepository repository;
+
     // Get all cases
     public List<CaseDetails> getAllCases()
     {
@@ -26,7 +30,10 @@ public class CaseDetailService
     public CaseDetails getCaseById(Long id) {
         Optional<CaseDetails> caseOptional = caseDetailRepository.findById(id);
         if (caseOptional.isPresent()) {
-            return caseOptional.get();
+            Long count = repository.countByCaseDetails_CaseId(id);
+            CaseDetails details = caseOptional.get();
+            details.setAttachmentCount(count);
+            return details;
         } else {
             throw new RuntimeException("Case not found with ID: " + id);
         }
@@ -43,11 +50,12 @@ public class CaseDetailService
     // Delete a case
     public boolean deleteCase(Long id)
     {
-        if (caseDetailRepository.existsById(id)) {
-            //throw new RuntimeException("Case not found with ID: " + id);
-            caseDetailRepository.deleteById(id);
-            return true;
-        }
+//        if (caseDetailRepository.existsById(id)) {
+//            //throw new RuntimeException("Case not found with ID: " + id);
+//            caseDetailRepository.deleteById(id);
+//            return true;
+//        }
+        caseDetailRepository.deleteById(id);
       return false;
     }
 

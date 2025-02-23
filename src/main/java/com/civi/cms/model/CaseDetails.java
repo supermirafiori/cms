@@ -1,5 +1,6 @@
 package com.civi.cms.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
@@ -36,10 +37,12 @@ public class CaseDetails
     private List<Member> membersInvolved;
 
     // Relationships
-    @OneToMany(mappedBy = "caseDetails1", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-
+    @JsonIgnore
+    @OneToMany(mappedBy = "caseDetails", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<CaseAttachment> attachments;
 
+    private Long attachmentCount;
     @OneToMany(mappedBy = "caseDetails", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<CaseHistory> caseHistories;
@@ -207,6 +210,14 @@ public class CaseDetails
 
     public void setServiceProviders(List<ServiceProvider> serviceProviders) {
         this.serviceProviders = serviceProviders;
+    }
+
+    public Long getAttachmentCount() {
+        return attachmentCount;
+    }
+
+    public void setAttachmentCount(Long attachmentCount) {
+        this.attachmentCount = attachmentCount;
     }
 
     public enum CaseStatus{

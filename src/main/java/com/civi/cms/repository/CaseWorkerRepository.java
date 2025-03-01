@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface CaseWorkerRepository extends JpaRepository<CaseWorker,String> {
+public interface CaseWorkerRepository extends JpaRepository<CaseWorker,Integer> {
     List<CaseWorker> findByIsDeletedFalse();
 
     List<CaseWorker> findByIsDeletedTrue();
 
-    Optional<CaseWorker> findByEmailAndIsDeletedFalse(String email);
+    Optional<CaseWorker> findByCaseWorkerIdAndIsDeletedFalse(Long id);
 }

@@ -1,11 +1,16 @@
 package com.civi.cms.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "caseId") // Prevents circular reference
 
 @Entity
 public class CaseDetails
@@ -55,12 +60,24 @@ public class CaseDetails
     )
     private List<ServiceProvider> serviceProviders;
 
-    @ManyToOne
-    @JoinColumn(name = "case_worker_id", referencedColumnName = "caseWorkerId")
-    private CaseWorker assignedCaseWorker;
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "case_worker_assignment",
+            joinColumns = @JoinColumn(name = "case_id"),
+            inverseJoinColumns = @JoinColumn(name = "case_worker_id")
+    )
+    private List<CaseWorker> assignedCaseWorkers = new ArrayList<>();
+    public void addCaseWorker(CaseWorker caseWorker) {
+        assignedCaseWorkers.add(caseWorker);
+        caseWorker.getCaseDetails().add(this);  // Ensure bidirectional update
+    }
 
-    public void setAssignedCaseWorker(CaseWorker assignedCaseWorker) {
-        this.assignedCaseWorker = assignedCaseWorker;
+    public List<CaseWorker> getAssignedCaseWorkers() {
+        return assignedCaseWorkers;
+    }
+
+    public void setAssignedCaseWorkers(List<CaseWorker> assignedCaseWorkers) {
+        this.assignedCaseWorkers = assignedCaseWorkers;
     }
 
     public List<FollowUp> getFollowUps() {
@@ -71,9 +88,6 @@ public class CaseDetails
         this.followUps = followUps;
     }
 
-    public CaseWorker getAssignedCaseWorker() {
-        return assignedCaseWorker;
-    }
 
     public Long getCaseId() {
         return caseId;

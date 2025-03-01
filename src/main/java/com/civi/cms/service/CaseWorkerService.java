@@ -1,11 +1,14 @@
 package com.civi.cms.service;
+import com.civi.cms.model.CaseDetails;
 import com.civi.cms.model.CaseWorker;
+import com.civi.cms.repository.CaseDetailRepository;
 import com.civi.cms.repository.CaseWorkerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,14 +18,23 @@ public class CaseWorkerService {
     @Autowired
     private CaseWorkerRepository caseWorkerRepository;
 
+    @Autowired
+    private CaseDetailRepository caseDetailsRepository;
+
     // Create case worker
     public ResponseEntity<?> createCaseWorker(CaseWorker caseWorker) {
-        try{
-            CaseWorker savedCaseWorker = caseWorkerRepository.save(caseWorker);
-            return ResponseEntity.status(201).body(savedCaseWorker); // HTTP 201 Created
-        }catch (Exception e){
-            return ResponseEntity.status(500).body(e.getMessage());
-        }
+
+
+
+        return ResponseEntity.ok(caseWorkerRepository.save(caseWorker));
+
+
+//        try{
+//            CaseWorker savedCaseWorker = caseWorkerRepository.save(caseWorker);
+//            return ResponseEntity.status(201).body(savedCaseWorker); // HTTP 201 Created
+//        }catch (Exception e){
+//            return ResponseEntity.status(500).body(e.getMessage());
+       // }
     }
 
     // Get all active (non-deleted) case workers
@@ -46,8 +58,8 @@ public class CaseWorkerService {
 
 
     // Get a case worker by email
-    public ResponseEntity<CaseWorker> getCaseWorkerByEmail(String email) {
-        Optional<CaseWorker> caseWorker = caseWorkerRepository.findByEmailAndIsDeletedFalse(email);
+    public ResponseEntity<CaseWorker> getCaseWorkerByEmail(Long id) {
+        Optional<CaseWorker> caseWorker = caseWorkerRepository.findByCaseWorkerIdAndIsDeletedFalse(id);
         if(caseWorker.isEmpty()){
             return ResponseEntity.status(404).body(null);
         }
@@ -57,7 +69,7 @@ public class CaseWorkerService {
     // Update case worker
     public ResponseEntity<?> updateCaseWorker(CaseWorker updatedCaseWorker) {
         Optional<CaseWorker> existingCaseWorker = caseWorkerRepository.
-                findByEmailAndIsDeletedFalse(updatedCaseWorker.getEmail());
+                findByCaseWorkerIdAndIsDeletedFalse(updatedCaseWorker.getCaseWorkerId());
         if (existingCaseWorker.isEmpty()) {
             return ResponseEntity.status(404).body("case worker not found");
         }
@@ -68,15 +80,42 @@ public class CaseWorkerService {
 
     // Soft delete case worker (mark as deleted)
     @Transactional
-    public ResponseEntity<String> softDeleteCaseWorker(String email) {
+    public ResponseEntity<String> softDeleteCaseWorker(Long id ) {
         Optional<CaseWorker> existingCaseWorker = caseWorkerRepository.
-                findByEmailAndIsDeletedFalse(email);
+                findByCaseWorkerIdAndIsDeletedFalse(id);
         if (existingCaseWorker.isEmpty()) {
             return ResponseEntity.status(404).body("case worker not found");
         }
         CaseWorker c = existingCaseWorker.get();
         c.setDeleted(true);
         caseWorkerRepository.save(c);
-        return ResponseEntity.ok("Case worker with email " + email + " has been marked as deleted."); // HTTP 200 OK
+        return ResponseEntity.ok("case worker deleted successfully"); // HTTP 200 OK
+    }
+
+    public ResponseEntity<CaseWorker> getCaseWorkerById(Long id) {
+        Optional<CaseWorker> existingCaseWorker = caseWorkerRepository.
+                findByCaseWorkerIdAndIsDeletedFalse(id);
+        if (existingCaseWorker.isEmpty()) {
+            return ResponseEntity.status(404).body(null);
+        }
+        return ResponseEntity.ok(existingCaseWorker.get()); // HTTP 200 OK
+    }
+
+
+    public ResponseEntity<?> assignCaseWorkerToCase(Long caseid, int workerid) {
+        List<CaseDetails> updatedCaseDetails = new ArrayList<>();
+        Optional<CaseDetails> existingCase = caseDetailsRepository.findById(caseid);
+        if (existingCase.isPresent()) {
+            Optional<CaseWorker> existingCaseWorker = caseWorkerRepository.findById(workerid);
+            if (existingCaseWorker.isPresent()) {
+                CaseWorker worker = existingCaseWorker.get();
+                CaseDetails caseDetails = existingCase.get();
+                caseDetails.addCaseWorker(worker);
+                updatedCaseDetails.add(caseDetails);
+                caseDetailsRepository.saveAll(updatedCaseDetails);
+                return ResponseEntity.ok("Case worker assigned successfully");
+            }
+        }
+        return ResponseEntity.notFound().build();
     }
 }

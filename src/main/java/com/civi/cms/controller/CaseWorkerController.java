@@ -20,6 +20,12 @@ public class CaseWorkerController {
         return caseWorkerService.createCaseWorker(caseWorker);
     }
 
+    @PostMapping("/assign-caseworker/caseid/{caseid}/worker/{workerid}")
+    public ResponseEntity<?> createCaseWorker(@PathVariable Long caseid, @PathVariable Integer workerid) {
+        return caseWorkerService.assignCaseWorkerToCase(caseid, workerid);
+    }
+
+
     // Get all case workers
     @GetMapping("/get-caseworkers")
     public ResponseEntity<List<CaseWorker>> getAllCaseWorkers() {
@@ -32,10 +38,10 @@ public class CaseWorkerController {
         return (caseWorkerService.getAllDeactivatedCaseWorkers());
     }
 
-    // Get a case worker by email (Primary Key)
-    @GetMapping("/get-caseworker/{email}")
-    public ResponseEntity<CaseWorker> getCaseWorkerByEmail(@PathVariable String email) {
-        return (caseWorkerService.getCaseWorkerByEmail(email));
+
+    @GetMapping("/get-caseworker/id/{id}")
+    public ResponseEntity<CaseWorker> getCaseWorkerById(@PathVariable Long id) {
+        return (caseWorkerService.getCaseWorkerById(id));
     }
 
     // Update a case worker
@@ -45,8 +51,8 @@ public class CaseWorkerController {
     }
 
     // Delete a case worker
-    @DeleteMapping("/delete-caseworker/{email}")
-    public ResponseEntity<String> deleteCaseWorker(@PathVariable String email) {
-        return caseWorkerService.softDeleteCaseWorker(email);
+    @DeleteMapping("/delete-caseworker/{id}")
+    public ResponseEntity<String> deleteCaseWorker(@PathVariable Long id) {
+        return caseWorkerService.softDeleteCaseWorker(id);
     }
 }

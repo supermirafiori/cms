@@ -1,9 +1,6 @@
 package com.civi.cms.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -11,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "caseId") // Prevents circular reference
-
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity
 public class CaseDetails
 {
@@ -60,23 +57,26 @@ public class CaseDetails
     )
     private List<ServiceProvider> serviceProviders;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-            name = "case_worker_assignment",
-            joinColumns = @JoinColumn(name = "case_id"),
-            inverseJoinColumns = @JoinColumn(name = "case_worker_id")
-    )
-    private List<CaseWorker> assignedCaseWorkers = new ArrayList<>();
-    public void addCaseWorker(CaseWorker caseWorker) {
-        assignedCaseWorkers.add(caseWorker);
-        caseWorker.getCaseDetails().add(this);  // Ensure bidirectional update
-    }
+//    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+//    @JoinTable(
+//            name = "case_worker_assignment",
+//            joinColumns = @JoinColumn(name = "case_id"),
+//            inverseJoinColumns = @JoinColumn(name = "case_worker_id")
+//    )
+//    private List<CaseWorker> assignedCaseWorkers = new ArrayList<>();
+//    public void addCaseWorker(CaseWorker caseWorker) {
+//        assignedCaseWorkers.add(caseWorker);
+//        caseWorker.getCaseDetails().add(this);  // Ensure bidirectional update
+//    }
 
-    public List<CaseWorker> getAssignedCaseWorkers() {
+    @OneToMany(mappedBy = "caseDetails", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<CaseWorkerAssignment> assignedCaseWorkers = new ArrayList<>();
+
+    public List<CaseWorkerAssignment> getAssignedCaseWorkers() {
         return assignedCaseWorkers;
     }
 
-    public void setAssignedCaseWorkers(List<CaseWorker> assignedCaseWorkers) {
+    public void setAssignedCaseWorkers(List<CaseWorkerAssignment> assignedCaseWorkers) {
         this.assignedCaseWorkers = assignedCaseWorkers;
     }
 

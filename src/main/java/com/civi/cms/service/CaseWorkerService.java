@@ -1,13 +1,16 @@
 package com.civi.cms.service;
 import com.civi.cms.model.CaseDetails;
 import com.civi.cms.model.CaseWorker;
+import com.civi.cms.model.CaseWorkerAssignment;
 import com.civi.cms.repository.CaseDetailRepository;
+import com.civi.cms.repository.CaseWorkerAssignmentRepository;
 import com.civi.cms.repository.CaseWorkerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +23,9 @@ public class CaseWorkerService {
 
     @Autowired
     private CaseDetailRepository caseDetailsRepository;
+
+    @Autowired
+    CaseWorkerAssignmentRepository caseWorkerAssignmentRepository;
 
     // Create case worker
     public ResponseEntity<?> createCaseWorker(CaseWorker caseWorker) {
@@ -102,20 +108,49 @@ public class CaseWorkerService {
     }
 
 
-    public ResponseEntity<?> assignCaseWorkerToCase(Long caseid, int workerid) {
-        List<CaseDetails> updatedCaseDetails = new ArrayList<>();
-        Optional<CaseDetails> existingCase = caseDetailsRepository.findById(caseid);
-        if (existingCase.isPresent()) {
-            Optional<CaseWorker> existingCaseWorker = caseWorkerRepository.findById(workerid);
-            if (existingCaseWorker.isPresent()) {
-                CaseWorker worker = existingCaseWorker.get();
-                CaseDetails caseDetails = existingCase.get();
-                caseDetails.addCaseWorker(worker);
-                updatedCaseDetails.add(caseDetails);
-                caseDetailsRepository.saveAll(updatedCaseDetails);
-                return ResponseEntity.ok("Case worker assigned successfully");
-            }
+//    public ResponseEntity<?> assignCaseWorkerToCase(Long caseid, int workerid) {
+//        List<CaseDetails> updatedCaseDetails = new ArrayList<>();
+//        Optional<CaseDetails> existingCase = caseDetailsRepository.findById(caseid);
+//        if (existingCase.isPresent()) {
+//            Optional<CaseWorker> existingCaseWorker = caseWorkerRepository.findById(workerid);
+//            if (existingCaseWorker.isPresent()) {
+//                CaseWorker worker = existingCaseWorker.get();
+//                CaseDetails caseDetails = existingCase.get();
+//                caseDetails.addCaseWorker(worker);
+//                updatedCaseDetails.add(caseDetails);
+//                caseDetailsRepository.saveAll(updatedCaseDetails);
+//                return ResponseEntity.ok("Case worker assigned successfully");
+//            }
+//        }
+//        return ResponseEntity.notFound().build();
+//    }
+public ResponseEntity<?> assignCaseWorkerToCase(Long caseId, int workerId) {
+    Optional<CaseDetails> existingCase = caseDetailsRepository.findById(caseId);
+    Optional<CaseWorker> existingCaseWorker = caseWorkerRepository.findById(workerId);
+
+    if (existingCase.isPresent() && existingCaseWorker.isPresent()) {
+        CaseDetails caseDetails = existingCase.get();
+        CaseWorker caseWorker = existingCaseWorker.get();
+
+        // Check if this assignment already exists to prevent duplicates
+        boolean alreadyAssigned = caseWorkerAssignmentRepository.existsByCaseDetailsAndCaseWorker(caseDetails, caseWorker);
+        if (alreadyAssigned) {
+            return ResponseEntity.ok("Case worker already assigned to this case.");
         }
-        return ResponseEntity.notFound().build();
+
+        // Create a new assignment
+        CaseWorkerAssignment assignment = new CaseWorkerAssignment();
+        assignment.setCaseDetails(caseDetails);
+        assignment.setCaseWorker(caseWorker);
+        assignment.setAssignedDate(LocalDateTime.now());
+
+        // Save the assignment
+        caseWorkerAssignmentRepository.save(assignment);
+
+        return ResponseEntity.ok("Case worker assigned successfully.");
     }
+
+    return ResponseEntity.notFound().build();
+}
+
 }

@@ -1,9 +1,6 @@
 package com.civi.cms.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,6 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "caseWorkerId") // Prevents circular reference
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class CaseWorker {
     private String firstName;
     private String lastName;
@@ -30,8 +28,11 @@ public class CaseWorker {
     private String homeAddress;
     private String officeAddress;
     private List<String> qualification;
-    @ManyToMany(mappedBy = "assignedCaseWorkers", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private List<CaseDetails> caseDetails = new ArrayList<>();
+//    @ManyToMany(mappedBy = "assignedCaseWorkers", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+//    private List<CaseDetails> caseDetails = new ArrayList<>();
+
+    @OneToMany(mappedBy = "caseWorker", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<CaseWorkerAssignment> assignedCases = new ArrayList<>();
 
     @Column(nullable = false)
     private boolean isDeleted = false;

@@ -79,6 +79,10 @@ public class UserService
         }
         return false;
     }
+
+    public ResponseEntity<?> getAllUser() {
+        return ResponseEntity.ok(userRepository.findAll());
+    }
 }
 
 

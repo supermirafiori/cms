@@ -40,7 +40,7 @@ public class CaseWorkerController {
 
 
     @GetMapping("/get-caseworker/id/{id}")
-    public ResponseEntity<CaseWorker> getCaseWorkerById(@PathVariable Long id) {
+    public ResponseEntity<?> getCaseWorkerById(@PathVariable Long id) {
         return (caseWorkerService.getCaseWorkerById(id));
     }
 

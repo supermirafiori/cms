@@ -11,7 +11,7 @@ public class UserLogin
     @Id
     private String email;
     private String password;
-    private String role;
+    private Role role;
     private boolean isLocked;
     private boolean isWorking;
 
@@ -33,11 +33,11 @@ public class UserLogin
         this.password = password;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 
@@ -63,5 +63,11 @@ public class UserLogin
 
     public void setLastLogin(LocalDateTime lastLogin) {
         this.lastLogin = lastLogin;
+    }
+
+    public enum Role{
+        ADMIN,
+        CASEWORKER,
+        USER,
     }
 }

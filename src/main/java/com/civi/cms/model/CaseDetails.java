@@ -68,7 +68,7 @@ public class CaseDetails
 //        assignedCaseWorkers.add(caseWorker);
 //        caseWorker.getCaseDetails().add(this);  // Ensure bidirectional update
 //    }
-
+    @JsonIgnore
     @OneToMany(mappedBy = "caseDetails", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CaseWorkerAssignment> assignedCaseWorkers = new ArrayList<>();
 

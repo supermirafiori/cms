@@ -31,7 +31,7 @@ public class CaseDetailService
     }
 
     // Get a case by ID
-    public ResponseEntity<Map<String, Object>> getCaseById(Long id) {
+    public ResponseEntity<?> getCaseById(Long id) {
         Optional<CaseDetails> caseOptional = caseDetailRepository.findById(id);
         if (caseOptional.isPresent()) {
             Long count = repository.countByCaseDetails_CaseId(id);
@@ -53,7 +53,7 @@ public class CaseDetailService
             responseData.put("assignedCaseWorkers", assignedCaseWorkers);
             return ResponseEntity.ok(responseData); // HTTP 200 OK
         } else {
-            throw new RuntimeException("Case not found with ID: " + id);
+            return ResponseEntity.notFound().build(); // HTTP 404 Not Found
         }
     }
 

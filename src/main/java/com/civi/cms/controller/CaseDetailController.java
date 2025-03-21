@@ -28,7 +28,7 @@ public class CaseDetailController {
 
     // Get case by ID
     @GetMapping("/{id}") //tested already in postman
-    public ResponseEntity<Map<String, Object>> getCaseById(@PathVariable Long id) {
+    public ResponseEntity<?> getCaseById(@PathVariable Long id) {
         return caseDetailService.getCaseById(id);
 
     }
@@ -70,7 +70,7 @@ public class CaseDetailController {
 
     //get all case with clientId
     @GetMapping("/clientId/{id}") //tested already in postman
-    public ResponseEntity<Map<String, Object>> getCaseByClientId(@PathVariable Long id) {
+    public ResponseEntity<?> getCaseByClientId(@PathVariable Long id) {
         return caseDetailService.getCaseById(id);
     }
 }

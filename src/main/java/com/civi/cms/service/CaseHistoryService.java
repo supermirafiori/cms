@@ -21,10 +21,11 @@ public class CaseHistoryService {
     public ResponseEntity<?> addCaseHistory(CaseHistory history){
         if(history!=null && history.getCaseDetails()!=null &&
                 history.getCaseDetails().getCaseId()!=null){
-            ResponseEntity<Map<String, Object>> c1=service.getCaseById(history.getCaseDetails().getCaseId());
+            ResponseEntity<?> c1=service.getCaseById(history.getCaseDetails().getCaseId());
             if(c1!=null){
-                history.setCaseDetails(c1.getBody().get("caseDetails")!=null?
-                        (CaseDetails)c1.getBody().get("caseDetails"):null);
+                Map<String, Object> responseData = (Map<String, Object>) c1.getBody();
+                history.setCaseDetails(responseData.get("caseDetails")!=null?
+                        (CaseDetails)responseData.get("caseDetails"):null);
                 return ResponseEntity.ok().body(repository.save(history));
             }
             else{

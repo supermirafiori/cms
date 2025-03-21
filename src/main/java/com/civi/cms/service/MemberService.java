@@ -21,9 +21,10 @@ public class MemberService {
         if(m!=null && m.getCaseDetails()!=null &&
                 m.getCaseDetails().getCaseId()!=null){
 
-            ResponseEntity<Map<String, Object>> c1=service.getCaseById(m.getCaseDetails().getCaseId());
+            ResponseEntity<?> c1=service.getCaseById(m.getCaseDetails().getCaseId());
             if(c1!=null){
-                m.setCaseDetails(c1.getBody().get("caseDetails")!=null?(CaseDetails)c1.getBody().get("caseDetails"):null);
+                Map<String, Object> responseData = (Map<String, Object>) c1.getBody();
+                m.setCaseDetails(responseData.get("caseDetails")!=null?(CaseDetails)responseData.get("caseDetails"):null);
                 return ResponseEntity.ok().body(repository.save(m));
             }
             else{

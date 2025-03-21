@@ -83,6 +83,17 @@ public class UserLoginController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
         }
     }
+
+    @DeleteMapping("/deleteUser/{emailId}")
+    public ResponseEntity<String> deleteUser(@PathVariable String emailId) {
+        boolean isDeleted = userService.deleteUser(emailId);
+        if (isDeleted) {
+            return ResponseEntity.ok("User successfully deleted.");
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }
 
 

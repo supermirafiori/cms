@@ -12,10 +12,10 @@ public class UserLogin
     private String email;
     private String password;
     private Role role;
-    private boolean isLocked;
-    private boolean isWorking;
+    private boolean isLocked = false;
+    private boolean isWorking=true;
 
-    private LocalDateTime lastLogin;
+    private LocalDateTime creationDate;
 
     public String getEmail() {
         return email;
@@ -57,12 +57,12 @@ public class UserLogin
         isWorking = working;
     }
 
-    public LocalDateTime getLastLogin() {
-        return lastLogin;
+    public LocalDateTime getCreationDate() {
+        return creationDate;
     }
 
-    public void setLastLogin(LocalDateTime lastLogin) {
-        this.lastLogin = lastLogin;
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
     }
 
     public enum Role{

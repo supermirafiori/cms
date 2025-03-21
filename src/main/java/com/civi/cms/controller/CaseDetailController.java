@@ -73,4 +73,9 @@ public class CaseDetailController {
     public ResponseEntity<?> getCaseByClientId(@PathVariable Long id) {
         return caseDetailService.getCaseById(id);
     }
+
+    @GetMapping("/status/{status}") //tested already in postman
+    public ResponseEntity<?> getCaseByStatus(@PathVariable CaseDetails.CaseStatus status) {
+        return caseDetailService.getCaseByStatus(status);
+    }
 }

@@ -32,8 +32,10 @@ public class UserService
             return ResponseEntity.badRequest().body("User already exists.");
         }
         userlogin.setPassword(passwordEncoder.encode(userlogin.getPassword()));
-        userlogin.setLastLogin(LocalDateTime.now());
-        return ResponseEntity.status(HttpStatus.CREATED).body(userRepository.save(userlogin));
+        userlogin.setCreationDate(LocalDateTime.now());
+        UserLogin login = userRepository.save(userlogin);
+        login.setPassword(null); // Remove password from response
+        return ResponseEntity.status(HttpStatus.CREATED).body(login);
     }
 
     public ResponseEntity<?> validateUsernameAndPassword(String username, String password) {
@@ -47,13 +49,17 @@ public class UserService
             return ResponseEntity.badRequest().body("Invalid password. Please check and try again.");
         }
         else{
-            if(user.isLocked())
+            if(!user.isWorking())
+            {
+                return ResponseEntity.badRequest().body("User is not part of company!");
+            }
+            else if(user.isLocked())
             {
                 return ResponseEntity.badRequest().body("Account is locked!");
             }
 
         }
-
+        user.setPassword(null); // Remove password from response
         return ResponseEntity.ok(user);
     }
 
@@ -81,7 +87,27 @@ public class UserService
     }
 
     public ResponseEntity<?> getAllUser() {
-        return ResponseEntity.ok(userRepository.findAll());
+        //remove password
+        return ResponseEntity.ok(userRepository.findAll().stream()
+                .map(user -> {
+                    user.setPassword(null); // Remove password from each user
+                    return user;
+                }).toList());
+
+    }
+
+    public boolean deleteUser(String emailId) {
+        //set is working as false and islocaked true
+        Optional<UserLogin> userOpt = userRepository.findById(emailId);
+        if (userOpt.isPresent()) {
+            UserLogin user = userOpt.get();
+            user.setWorking(false); // Assuming there's a 'working' field
+            user.setLocked(true);   // Assuming 'locked' is a boolean field in UserLogin
+            userRepository.save(user);
+            return true;
+        }
+        return false;
+
     }
 }
 

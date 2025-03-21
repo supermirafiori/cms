@@ -97,4 +97,10 @@ public class CaseDetailService
             return ResponseEntity.badRequest().body("invalid caseid");
         }
     }
+
+    public ResponseEntity<?> getCaseByStatus(CaseDetails.CaseStatus status) {
+        List<CaseDetails> cases = caseDetailRepository.findByCaseStatus(status);
+        return ResponseEntity.ok(cases);
+
+    }
 }

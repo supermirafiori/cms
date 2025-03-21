@@ -8,8 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/cases")
@@ -28,9 +28,9 @@ public class CaseDetailController {
 
     // Get case by ID
     @GetMapping("/{id}") //tested already in postman
-    public ResponseEntity<CaseDetails> getCaseById(@PathVariable Long id) {
-        CaseDetails caseDetailsObj = caseDetailService.getCaseById(id);
-        return ResponseEntity.ok(caseDetailsObj);
+    public ResponseEntity<Map<String, Object>> getCaseById(@PathVariable Long id) {
+        return caseDetailService.getCaseById(id);
+
     }
 
     // Create a new case
@@ -70,8 +70,7 @@ public class CaseDetailController {
 
     //get all case with clientId
     @GetMapping("/clientId/{id}") //tested already in postman
-    public ResponseEntity<CaseDetails> getCaseByClientId(@PathVariable Long id) {
-        CaseDetails caseDetailsObj = caseDetailService.getCaseById(id);
-        return ResponseEntity.ok(caseDetailsObj);
+    public ResponseEntity<Map<String, Object>> getCaseByClientId(@PathVariable Long id) {
+        return caseDetailService.getCaseById(id);
     }
 }

@@ -1,4 +1,5 @@
 package com.civi.cms.service;
+import com.civi.cms.model.AssignedCaseDTO;
 import com.civi.cms.model.CaseDetails;
 import com.civi.cms.model.CaseWorker;
 import com.civi.cms.model.CaseWorkerAssignment;
@@ -11,9 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class CaseWorkerService {
@@ -98,32 +98,28 @@ public class CaseWorkerService {
         return ResponseEntity.ok("case worker deleted successfully"); // HTTP 200 OK
     }
 
-    public ResponseEntity<CaseWorker> getCaseWorkerById(Long id) {
+    public ResponseEntity<?> getCaseWorkerById(Long id) {
         Optional<CaseWorker> existingCaseWorker = caseWorkerRepository.
                 findByCaseWorkerIdAndIsDeletedFalse(id);
         if (existingCaseWorker.isEmpty()) {
             return ResponseEntity.status(404).body(null);
         }
-        return ResponseEntity.ok(existingCaseWorker.get()); // HTTP 200 OK
+        CaseWorker caseWorker = existingCaseWorker.get();
+        Map<String, Object> response = getCaseWorkerDetails(caseWorker);
+        return ResponseEntity.ok(response); // HTTP 200 OK
+    }
+    private Map<String, Object>  getCaseWorkerDetails(CaseWorker caseWorker) {
+        Map<String, Object> response = new LinkedHashMap<>();
+        List<AssignedCaseDTO> assignedCases = caseWorker.getAssignedCases()
+                .stream()
+                .map(ac -> new AssignedCaseDTO( ac.getCaseDetails().getCaseId(), ac.getAssignedDate()))
+                .collect(Collectors.toList());
+        response.put("caseWorker", caseWorker);
+        response.put("assignedCases", assignedCases);
+        return response;
     }
 
 
-//    public ResponseEntity<?> assignCaseWorkerToCase(Long caseid, int workerid) {
-//        List<CaseDetails> updatedCaseDetails = new ArrayList<>();
-//        Optional<CaseDetails> existingCase = caseDetailsRepository.findById(caseid);
-//        if (existingCase.isPresent()) {
-//            Optional<CaseWorker> existingCaseWorker = caseWorkerRepository.findById(workerid);
-//            if (existingCaseWorker.isPresent()) {
-//                CaseWorker worker = existingCaseWorker.get();
-//                CaseDetails caseDetails = existingCase.get();
-//                caseDetails.addCaseWorker(worker);
-//                updatedCaseDetails.add(caseDetails);
-//                caseDetailsRepository.saveAll(updatedCaseDetails);
-//                return ResponseEntity.ok("Case worker assigned successfully");
-//            }
-//        }
-//        return ResponseEntity.notFound().build();
-//    }
 public ResponseEntity<?> assignCaseWorkerToCase(Long caseId, int workerId) {
     Optional<CaseDetails> existingCase = caseDetailsRepository.findById(caseId);
     Optional<CaseWorker> existingCaseWorker = caseWorkerRepository.findById(workerId);

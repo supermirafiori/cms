@@ -30,7 +30,7 @@ public class CaseWorker {
     private List<String> qualification;
 //    @ManyToMany(mappedBy = "assignedCaseWorkers", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 //    private List<CaseDetails> caseDetails = new ArrayList<>();
-
+    @JsonIgnore
     @OneToMany(mappedBy = "caseWorker", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CaseWorkerAssignment> assignedCases = new ArrayList<>();
 

@@ -1,4 +1,5 @@
 package com.civi.cms.service;
+import com.civi.cms.model.AssignedCaseWorkerDTO;
 import com.civi.cms.model.CaseDetails;
 import com.civi.cms.model.CaseHistory;
 import com.civi.cms.repository.CaseAttachmentRepository;
@@ -7,8 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -27,13 +31,27 @@ public class CaseDetailService
     }
 
     // Get a case by ID
-    public CaseDetails getCaseById(Long id) {
+    public ResponseEntity<Map<String, Object>> getCaseById(Long id) {
         Optional<CaseDetails> caseOptional = caseDetailRepository.findById(id);
         if (caseOptional.isPresent()) {
             Long count = repository.countByCaseDetails_CaseId(id);
             CaseDetails details = caseOptional.get();
             details.setAttachmentCount(count);
-            return details;
+
+            // Fetch assigned case workers
+            List<AssignedCaseWorkerDTO> assignedCaseWorkers = details.getAssignedCaseWorkers()
+                    .stream()
+                    .map(ac -> new AssignedCaseWorkerDTO(ac.getCaseWorker()))
+                    .collect(Collectors.toList());
+
+            // Convert entity to DTO
+           // CaseDetailsDTO caseDetailsDTO = new CaseDetailsDTO(details, count, assignedCaseWorkers);
+
+            // Build response
+            Map<String, Object> responseData = new LinkedHashMap<>();
+            responseData.put("caseDetails", details);
+            responseData.put("assignedCaseWorkers", assignedCaseWorkers);
+            return ResponseEntity.ok(responseData); // HTTP 200 OK
         } else {
             throw new RuntimeException("Case not found with ID: " + id);
         }

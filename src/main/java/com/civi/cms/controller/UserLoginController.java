@@ -28,6 +28,18 @@ public class UserLoginController {
 
     }
 
+    @GetMapping("/all-user")
+    public ResponseEntity<?> getAllUser() {
+        try {
+            return userService.getAllUser();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error creating user: " + e.getMessage());
+        }
+
+
+    }
+
     @PostMapping("/login")
     public ResponseEntity<?> validateLogin(@RequestBody UserLogin loginRequest) {
         return userService.validateUsernameAndPassword(loginRequest.getEmail(), loginRequest.getPassword());

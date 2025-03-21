@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Service
 public class CaseHistoryService {
 
@@ -19,9 +21,10 @@ public class CaseHistoryService {
     public ResponseEntity<?> addCaseHistory(CaseHistory history){
         if(history!=null && history.getCaseDetails()!=null &&
                 history.getCaseDetails().getCaseId()!=null){
-            CaseDetails c1=service.getCaseById(history.getCaseDetails().getCaseId());
+            ResponseEntity<Map<String, Object>> c1=service.getCaseById(history.getCaseDetails().getCaseId());
             if(c1!=null){
-                history.setCaseDetails(c1);
+                history.setCaseDetails(c1.getBody().get("caseDetails")!=null?
+                        (CaseDetails)c1.getBody().get("caseDetails"):null);
                 return ResponseEntity.ok().body(repository.save(history));
             }
             else{

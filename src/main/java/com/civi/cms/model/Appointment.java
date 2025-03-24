@@ -24,4 +24,5 @@ public class Appointment
    private String notes;
    private String bookedBy;
    private String clientMobileNumber;
+   private String clientEmail;
 }

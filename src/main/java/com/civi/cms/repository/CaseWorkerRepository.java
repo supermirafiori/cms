@@ -14,4 +14,8 @@ public interface CaseWorkerRepository extends JpaRepository<CaseWorker,Integer> 
     List<CaseWorker> findByIsDeletedTrue();
 
     Optional<CaseWorker> findByCaseWorkerIdAndIsDeletedFalse(Long id);
+
+    Optional<CaseWorker> findByEmail(String email);
+
+    Optional<CaseWorker> findByPhoneNumber(String phoneNumber);
 }

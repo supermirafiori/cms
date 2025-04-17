@@ -7,6 +7,7 @@ import com.civi.cms.repository.CaseDetailRepository;
 import com.civi.cms.repository.CaseWorkerAssignmentRepository;
 import com.civi.cms.repository.CaseWorkerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,18 +30,23 @@ public class CaseWorkerService {
 
     // Create case worker
     public ResponseEntity<?> createCaseWorker(CaseWorker caseWorker) {
+        try {
+            Optional<CaseWorker> existingByEmail = caseWorkerRepository.findByEmail(caseWorker.getEmail());
+            if (existingByEmail.isPresent()) {
+                return new ResponseEntity<>("Email already exists", HttpStatus.BAD_REQUEST);
+            }
 
+            Optional<CaseWorker> existingByPhone = caseWorkerRepository.findByPhoneNumber(caseWorker.getPhoneNumber());
+            if (existingByPhone.isPresent()) {
+                return new ResponseEntity<>("Phone number already exists", HttpStatus.BAD_REQUEST);
+            }
 
+            CaseWorker savedCaseWorker = caseWorkerRepository.save(caseWorker);
+            return new ResponseEntity<>(savedCaseWorker, HttpStatus.CREATED);
 
-        return ResponseEntity.ok(caseWorkerRepository.save(caseWorker));
-
-
-//        try{
-//            CaseWorker savedCaseWorker = caseWorkerRepository.save(caseWorker);
-//            return ResponseEntity.status(201).body(savedCaseWorker); // HTTP 201 Created
-//        }catch (Exception e){
-//            return ResponseEntity.status(500).body(e.getMessage());
-       // }
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error creating case worker: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     // Get all active (non-deleted) case workers

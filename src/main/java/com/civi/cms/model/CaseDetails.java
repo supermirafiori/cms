@@ -18,7 +18,9 @@ public class CaseDetails
 
     private String caseTitle;
     private String caseDescription;
-    private long clientId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "client_id") // foreign key column in CaseDetails table
+    private Client clientDetails;
     private CaseStatus caseStatus;
     private String priorityLevel;
     private String riskLevel;
@@ -113,12 +115,12 @@ public class CaseDetails
         this.caseDescription = caseDescription;
     }
 
-    public long getClientId() {
-        return clientId;
+    public Client getClient() {
+        return clientDetails;
     }
 
-    public void setClientId(long clientId) {
-        this.clientId = clientId;
+    public void setClient(Client clientId) {
+        this.clientDetails = clientId;
     }
 
 

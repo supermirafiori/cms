@@ -19,10 +19,16 @@ public class Appointment
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    private Long appointmentId;
    private LocalDateTime appointmentDateTime;
-   private String status;
+   private AppointmentStatus status;
    private String location;
    private String notes;
    private String bookedBy;
    private String clientMobileNumber;
    private String clientEmail;
+
+   public enum AppointmentStatus{
+      BOOKED,
+      CONFIRMED,
+      CANCELLED
+   }
 }

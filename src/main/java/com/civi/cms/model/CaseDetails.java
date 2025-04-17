@@ -2,6 +2,8 @@ package com.civi.cms.model;
 
 import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,6 +22,7 @@ public class CaseDetails
     private String caseDescription;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id") // foreign key column in CaseDetails table
+    @NotFound(action = NotFoundAction.IGNORE) // Add this
     private Client clientDetails;
     private CaseStatus caseStatus;
     private String priorityLevel;

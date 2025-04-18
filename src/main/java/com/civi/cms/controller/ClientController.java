@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/clients")
+@RequestMapping("/client")
 public class ClientController {
     //create crud operation
     @Autowired
@@ -36,6 +36,18 @@ public class ClientController {
     @GetMapping("/email/{emailId}")
     public ResponseEntity<?> getClientByEmail(@PathVariable String emailId) {
         return clientService.getClientByEmail(emailId);
+
+    }
+
+    @GetMapping("/associated-case/id/{id}")
+    public ResponseEntity<?> getCaseByClientId(@PathVariable Long id) {
+        return clientService.getCaseByClientId(id);
+
+    }
+
+    @GetMapping("/associated-case/email/{email}")
+    public ResponseEntity<?> getCaseByClientEmail(@PathVariable String email) {
+        return clientService.getCaseByClientEmail(email);
 
     }
 

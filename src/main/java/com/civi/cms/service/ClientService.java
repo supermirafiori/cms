@@ -73,4 +73,22 @@ public class ClientService {
             return new ResponseEntity<>("Client not found with email: " + emailId, HttpStatus.NOT_FOUND);
         }
     }
+
+    public ResponseEntity<?> getCaseByClientId(Long id) {
+        Optional<Client> client = clientRepository.findById(id);
+        if (client.isPresent()) {
+            return new ResponseEntity<>(client.get().getCaseDetailsList(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Client not found with id: " + id, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    public ResponseEntity<?> getCaseByClientEmail(String email) {
+        Optional<Client> client = clientRepository.findByEmail(email);
+        if (client.isPresent()) {
+            return new ResponseEntity<>(client.get().getCaseDetailsList(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Client not found with email: " + email, HttpStatus.NOT_FOUND);
+        }
+    }
 }

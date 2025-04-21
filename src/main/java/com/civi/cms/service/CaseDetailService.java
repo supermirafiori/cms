@@ -1,4 +1,5 @@
 package com.civi.cms.service;
+import com.civi.cms.dto.CaseAnalyticsDTO;
 import com.civi.cms.model.AssignedCaseWorkerDTO;
 import com.civi.cms.model.CaseDetails;
 import com.civi.cms.model.CaseHistory;
@@ -102,5 +103,24 @@ public class CaseDetailService
         List<CaseDetails> cases = caseDetailRepository.findByCaseStatus(status);
         return ResponseEntity.ok(cases);
 
+    }
+
+    public ResponseEntity<?> getCaseAnalytics() {
+        List<CaseDetails> caseDetailsList = caseDetailRepository.findAll();
+        long open = 0, closed = 0, inProgress = 0;
+
+        for (CaseDetails caseDetails : caseDetailsList) {
+            CaseDetails.CaseStatus status = caseDetails.getCaseStatus(); // adjust method if your field name is different
+
+            if (CaseDetails.CaseStatus.OPEN.equals(status)) {
+                open++;
+            } else if (CaseDetails.CaseStatus.CLOSED.equals(status)) {
+                closed++;
+            } else if (CaseDetails.CaseStatus.IN_PROGRESS.equals(status)) {
+                inProgress++;
+            }
+        }
+        CaseAnalyticsDTO analytics = new CaseAnalyticsDTO(open, closed, inProgress);
+        return ResponseEntity.ok(analytics);
     }
 }

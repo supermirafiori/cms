@@ -33,6 +33,12 @@ public class CaseDetailController {
 
     }
 
+    @GetMapping("/analytics") //tested already in postman
+    public ResponseEntity<?> getCaseAnalytics() {
+        return caseDetailService.getCaseAnalytics();
+
+    }
+
     // Create a new case
     @PostMapping("/create") //tested already in postman
     public ResponseEntity<CaseDetails> createCase(@RequestBody CaseDetails caseDetailsObj) {

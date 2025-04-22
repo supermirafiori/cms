@@ -45,7 +45,6 @@ public class UserService
         userlogin.setPassword(passwordEncoder.encode(userlogin.getPassword()));
         userlogin.setCreationDate(LocalDateTime.now());
         UserLogin login = userRepository.save(userlogin);
-        login.setPassword(null); // Remove password from response
         return ResponseEntity.status(HttpStatus.CREATED).body(login);
     }
 

@@ -11,7 +11,7 @@ public class CmsApplication {
 
 	public static void main(String[] args)
 	{
-		//DatabaseUrlConverter.getJdbcUrl();
+		DatabaseUrlConverter.getJdbcUrl();
 		SpringApplication.run(CmsApplication.class, args);
 
 

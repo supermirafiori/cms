@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.Map;
 
 @RequestMapping("/users")
@@ -92,6 +91,22 @@ public class UserLoginController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+
+    @PostMapping("/send-otp")
+    public ResponseEntity<String> sendOTP(@RequestParam String email) {
+        return userService.sendOTP(email);
+    }
+
+    @PostMapping("/verify-otp")
+    public ResponseEntity<?> verifyOTP(@RequestParam String email, @RequestParam String otp) {
+        return userService.verifyOTP(email, otp);
+
+    }
+    @PostMapping("/set-new-password")
+    public ResponseEntity<?> setNewPassword(@RequestBody Map<String, String> payload) {
+        return userService.setNewPassword(payload);
     }
 
 }

@@ -1,16 +1,21 @@
 package com.civi.cms.service;
 
+import com.civi.cms.model.PasswordResetToken;
 import com.civi.cms.model.UserLogin;
+import com.civi.cms.repository.PasswordResetTokenRepository;
 import com.civi.cms.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 public class UserService
@@ -18,6 +23,12 @@ public class UserService
 
     UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
+    @Autowired
+    EmailService  emailService;
+
+    @Autowired
+    PasswordResetTokenRepository passwordResetTokenRepository;
 
     @Autowired
     public UserService(UserRepository userRepository) {
@@ -109,6 +120,64 @@ public class UserService
         return false;
 
     }
+    private String generateOtp() {
+        return String.valueOf(new Random().nextInt(900000) + 100000); // 6-digit OTP
+    }
+
+    public ResponseEntity<String> sendOTP(String email) {
+        Optional<UserLogin> userOpt = userRepository.findById(email);
+
+        if (!userOpt.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with given email not found.");
+        }
+
+        PasswordResetToken passwordResetToken = new PasswordResetToken();
+        passwordResetToken.setEmail(email);
+        String otp = generateOtp();
+        passwordResetToken.setOtp(otp);
+        passwordResetToken.setCreatedAt(LocalDateTime.now());
+        passwordResetTokenRepository.save(passwordResetToken);
+
+        emailService.sendEmail(email, "Password Reset OTP",
+                "Your OTP for resetting password is: " + otp + "\nIt is valid for 10 minutes.");
+
+        return ResponseEntity.ok("OTP sent to your email.");
+    }
+
+    public ResponseEntity<?> verifyOTP(String email, String otp) {
+        Optional<PasswordResetToken> tokenOpt = passwordResetTokenRepository.findById(email);
+
+        if (tokenOpt.isPresent()) {
+            PasswordResetToken token = tokenOpt.get();
+            if(token.getOtp().equals(otp) && !token.isExpired()){
+                return ResponseEntity.ok("OTP verified successfully.");
+            }
+            else {
+                return ResponseEntity.badRequest().body("Invalid OTP or OTP expired.");
+            }
+
+        }
+        else {
+            return ResponseEntity.badRequest().body("Invalid email.");
+        }
+    }
+
+    public ResponseEntity<?> setNewPassword(Map<String, String> payload) {
+        String  email = payload.get("email");
+        String password = payload.get("password");
+        if(email == null || password == null){
+            return ResponseEntity.badRequest().body("Invalid request.");
+        } else if (password.length() < 8) {
+            ResponseEntity.badRequest().body("Password must be at least 8 characters long.");
+        }
+        userRepository.findById(payload.get("email")).ifPresent(user -> {
+            user.setPassword(passwordEncoder.encode(payload.get("password")));
+            userRepository.save(user);
+        });
+        return ResponseEntity.ok("Password changed successfully.");
+    }
+
+
 }
 
 

@@ -38,34 +38,35 @@ public class UserService
 
     public ResponseEntity<?> save(UserLogin userlogin)
     {
-        Optional<UserLogin> userLoginOptional = userRepository.findById(userlogin.getEmail());
+        Optional<UserLogin> userLoginOptional = userRepository.findById(userlogin.getEmail().toLowerCase());
         if(userLoginOptional.isPresent()){
-            return ResponseEntity.badRequest().body("User already exists.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("User already exists.");
         }
         userlogin.setPassword(passwordEncoder.encode(userlogin.getPassword()));
         userlogin.setCreationDate(LocalDateTime.now());
+        userlogin.setEmail(userlogin.getEmail().toLowerCase());
         UserLogin login = userRepository.save(userlogin);
         return ResponseEntity.status(HttpStatus.CREATED).body(login);
     }
 
     public ResponseEntity<?> validateUsernameAndPassword(String username, String password) {
-        Optional<UserLogin> userOptional = userRepository.findById(username);
+        Optional<UserLogin> userOptional = userRepository.findById(username.toLowerCase());
         if (userOptional.isEmpty()) {
-            return ResponseEntity.badRequest().body("Invalid username. Please check and try again.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username. Please check and try again.");
         }
 
         UserLogin user = userOptional.get();
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            return ResponseEntity.badRequest().body("Invalid password. Please check and try again.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid password. Please check and try again.");
         }
         else{
             if(!user.isWorking())
             {
-                return ResponseEntity.badRequest().body("User is not part of company!");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not part of company!");
             }
             else if(user.isLocked())
             {
-                return ResponseEntity.badRequest().body("Account is locked!");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Account is locked!");
             }
 
         }
@@ -75,7 +76,7 @@ public class UserService
 
 
     public boolean lockUserAccount(String userId) {
-        Optional<UserLogin> userOpt = userRepository.findById(userId);
+        Optional<UserLogin> userOpt = userRepository.findById(userId.toLowerCase());
         if (userOpt.isPresent()) {
             UserLogin user = userOpt.get();
             user.setLocked(true);  // Assume there's a 'locked' field
@@ -86,7 +87,7 @@ public class UserService
     }
 
     public boolean unlockUserAccount(String emailId) {
-        Optional<UserLogin> userOpt = userRepository.findById(emailId); // Assuming emailId is the user ID in the repository
+        Optional<UserLogin> userOpt = userRepository.findById(emailId.toLowerCase()); // Assuming emailId is the user ID in the repository
         if (userOpt.isPresent()) {
             UserLogin user = userOpt.get();
             user.setLocked(false);  // Assume 'locked' is a boolean field in UserLogin
@@ -108,7 +109,7 @@ public class UserService
 
     public boolean deleteUser(String emailId) {
         //set is working as false and islocaked true
-        Optional<UserLogin> userOpt = userRepository.findById(emailId);
+        Optional<UserLogin> userOpt = userRepository.findById(emailId.toLowerCase());
         if (userOpt.isPresent()) {
             UserLogin user = userOpt.get();
             user.setWorking(false); // Assuming there's a 'working' field
@@ -124,7 +125,7 @@ public class UserService
     }
 
     public ResponseEntity<String> sendOTP(String email) {
-        Optional<UserLogin> userOpt = userRepository.findById(email);
+        Optional<UserLogin> userOpt = userRepository.findById(email.toLowerCase());
 
         if (!userOpt.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with given email not found.");
@@ -144,7 +145,7 @@ public class UserService
     }
 
     public ResponseEntity<?> verifyOTP(String email, String otp) {
-        Optional<PasswordResetToken> tokenOpt = passwordResetTokenRepository.findById(email);
+        Optional<PasswordResetToken> tokenOpt = passwordResetTokenRepository.findById(email.toLowerCase());
 
         if (tokenOpt.isPresent()) {
             PasswordResetToken token = tokenOpt.get();
@@ -157,7 +158,7 @@ public class UserService
 
         }
         else {
-            return ResponseEntity.badRequest().body("Invalid email.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No OTP found for the given email.");
         }
     }
 
@@ -169,8 +170,8 @@ public class UserService
         } else if (password.length() < 8) {
             ResponseEntity.badRequest().body("Password must be at least 8 characters long.");
         }
-        userRepository.findById(payload.get("email")).ifPresent(user -> {
-            user.setPassword(passwordEncoder.encode(payload.get("password")));
+        userRepository.findById(email.toLowerCase()).ifPresent(user -> {
+            user.setPassword(passwordEncoder.encode(password));
             userRepository.save(user);
         });
         return ResponseEntity.ok("Password changed successfully.");

@@ -36,14 +36,15 @@ public class CaseWorkerService {
     @Transactional
     public ResponseEntity<?> createCaseWorker(CaseWorker caseWorker) {
         try {
+            caseWorker.setEmail(caseWorker.getEmail().toLowerCase());
             Optional<CaseWorker> existingByEmail = caseWorkerRepository.findByEmail(caseWorker.getEmail());
             if (existingByEmail.isPresent()) {
-                return new ResponseEntity<>("Email already exists", HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>("Email already exists", HttpStatus.CONFLICT);
             }
 
             Optional<CaseWorker> existingByPhone = caseWorkerRepository.findByPhoneNumber(caseWorker.getPhoneNumber());
             if (existingByPhone.isPresent()) {
-                return new ResponseEntity<>("Phone number already exists", HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>("Phone number already exists", HttpStatus.CONFLICT);
             }
 
             CaseWorker savedCaseWorker = caseWorkerRepository.save(caseWorker);

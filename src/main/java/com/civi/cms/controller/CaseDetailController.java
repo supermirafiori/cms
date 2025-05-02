@@ -82,4 +82,9 @@ public class CaseDetailController {
     public ResponseEntity<?> getCaseByStatus(@PathVariable CaseDetails.CaseStatus status) {
         return caseDetailService.getCaseByStatus(status);
     }
+
+    @GetMapping("/un-assigned") //tested already in postman
+    public ResponseEntity<?> getUnAssignedCase() {
+        return caseDetailService.getUnAssignedCase();
+    }
 }

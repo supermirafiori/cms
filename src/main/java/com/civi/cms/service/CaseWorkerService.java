@@ -210,4 +210,22 @@ public ResponseEntity<?> assignCaseWorkerToCase(Long caseId, int workerId) {
     return ResponseEntity.notFound().build();
 }
 
+    public ResponseEntity<?> getCaseByCaseWorker(String email) {
+        Optional<CaseWorker> caseWorkerOptional = caseWorkerRepository.findByEmail(email);
+        if(caseWorkerOptional.isEmpty()){
+            return ResponseEntity.status(404).body("case worker not found");
+        }
+        CaseWorker caseWorker = caseWorkerOptional.get();
+        List<CaseWorkerAssignment> assignments = caseWorker.getAssignedCases();
+
+        if(assignments.isEmpty()){
+            return ResponseEntity.status(404).body("no case assigned to this case worker");
+        }
+        List<CaseDetails>   caseDetailsList = new ArrayList<>();
+        for (CaseWorkerAssignment assignment : assignments) {
+            caseDetailsList.add(assignment.getCaseDetails());
+        }
+        return ResponseEntity.ok(caseDetailsList);
+
+    }
 }

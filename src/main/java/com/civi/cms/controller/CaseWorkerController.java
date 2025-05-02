@@ -55,4 +55,9 @@ public class CaseWorkerController {
     public ResponseEntity<String> deleteCaseWorker(@PathVariable Long id) {
         return caseWorkerService.softDeleteCaseWorker(id);
     }
+
+    @GetMapping("/cases-caseworker/{id}")
+    public ResponseEntity<?> getCaseByCaseWorker(@PathVariable String email) {
+        return caseWorkerService.getCaseByCaseWorker(email);
+    }
 }

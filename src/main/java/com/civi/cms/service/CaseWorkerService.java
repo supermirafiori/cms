@@ -201,8 +201,6 @@ public ResponseEntity<?> assignCaseWorkerToCase(Long caseId, int workerId) {
 
         // Save the assignment
         caseWorkerAssignmentRepository.save(assignment);
-        existingCase.get().setCaseWorkerAssigned(true);
-        caseDetailsRepository.save(existingCase.get());
 
         return ResponseEntity.ok("Case worker assigned successfully.");
     }

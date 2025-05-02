@@ -6,6 +6,7 @@ import com.civi.cms.model.CaseHistory;
 import com.civi.cms.repository.CaseAttachmentRepository;
 import com.civi.cms.repository.CaseDetailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -126,4 +127,9 @@ public class CaseDetailService
         CaseAnalyticsDTO analytics = new CaseAnalyticsDTO(open, closed, inProgress);
         return ResponseEntity.ok(analytics);
     }
+
+    public ResponseEntity<?> getUnAssignedCase() {
+        return new ResponseEntity<>(caseDetailRepository.findByIsCaseWorkerAssignedFalse(), HttpStatus.OK);
+    }
+
 }

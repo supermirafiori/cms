@@ -42,8 +42,6 @@ public class CaseDetailController {
     // Create a new case
     @PostMapping("/create") //tested already in postman
     public ResponseEntity<CaseDetails> createCase(@RequestBody CaseDetails caseDetailsObj) {
-        caseDetailsObj.setDateOpened(LocalDateTime.now());
-        caseDetailsObj.setCaseStatus(CaseDetails.CaseStatus.OPEN);
         CaseDetails createdCaseDetails = caseDetailService.createCase(caseDetailsObj);
         return ResponseEntity.ok(createdCaseDetails);
     }

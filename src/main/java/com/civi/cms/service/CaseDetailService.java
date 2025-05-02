@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,6 +62,8 @@ public class CaseDetailService
     // Create a new case
     public CaseDetails createCase(CaseDetails caseDetailsObj)
     {
+        caseDetailsObj.setDateOpened(LocalDateTime.now());
+        caseDetailsObj.setCaseStatus(CaseDetails.CaseStatus.OPEN);
         return caseDetailRepository.save(caseDetailsObj);
     }
 
@@ -75,7 +78,7 @@ public class CaseDetailService
 //            return true;
 //        }
         caseDetailRepository.deleteById(id);
-      return false;
+      return true;
     }
 
 

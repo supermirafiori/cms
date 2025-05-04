@@ -129,7 +129,7 @@ public class CaseDetailService
     }
 
     public ResponseEntity<?> getUnAssignedCase() {
-        return new ResponseEntity<>(caseDetailRepository.findByIsCaseWorkerAssignedFalse(), HttpStatus.OK);
+        return new ResponseEntity<>(caseDetailRepository.findByCaseWorkerAssignedFalse(), HttpStatus.OK);
     }
 
 }

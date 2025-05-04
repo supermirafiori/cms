@@ -3,6 +3,7 @@ package com.civi.cms.model;
 import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
@@ -16,6 +17,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class CaseDetails
 {
     @Id
@@ -34,7 +36,7 @@ public class CaseDetails
     private String caseCategory;
     private String legalInvolvement;
     private String referralSource;
-    private boolean isCaseWorkerAssigned = false;
+    private boolean caseWorkerAssigned = false;
 
     private LocalDateTime dateOpened;
     private LocalDateTime dateClosed;

@@ -10,7 +10,7 @@ import java.util.List;
     public interface CaseDetailRepository extends JpaRepository<CaseDetails, Long>
     {
         List<CaseDetails> findByCaseStatus(CaseDetails.CaseStatus status);
-        List<CaseDetails> findByIsCaseWorkerAssignedFalse();
+        List<CaseDetails> findByCaseWorkerAssignedFalse();
         //all methods are created by JpaRep
         //line number12 -- that indicates the param used
     }

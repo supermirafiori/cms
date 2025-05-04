@@ -44,7 +44,6 @@ public class ClientController {
         return clientService.getCaseByClientId(id);
 
     }
-
     @GetMapping("/associated-case/email/{email}")
     public ResponseEntity<?> getCaseByClientEmail(@PathVariable String email) {
         return clientService.getCaseByClientEmail(email);

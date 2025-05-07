@@ -50,8 +50,11 @@ public class CaseDetailService
             // Build response
             Map<String, Object> responseData = new LinkedHashMap<>();
             List<CaseHistory> histories = details.getCaseHistories();
-            Collections.sort(histories, (h1, h2) -> h2.getReportDate().compareTo(h1.getReportDate()));
-            details.setCaseHistories(histories);
+            if(histories.size()>1){
+                Collections.sort(histories, (h1, h2) -> h2.getReportDate().compareTo(h1.getReportDate()));
+                details.setCaseHistories(histories);
+            }
+           
             responseData.put("caseDetails", details);
             responseData.put("assignedCaseWorkers", assignedCaseWorkers);
             return ResponseEntity.ok(responseData); // HTTP 200 OK
